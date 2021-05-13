@@ -2,15 +2,23 @@ package cmd
 
 import (
 	"fmt"
+	"io/ioutil"
+	"log"
 	"os"
 
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"gopkg.in/yaml.v2"
 )
 
 var cfgFile string
 var debugFlag bool
+
+type Conf struct {
+	Strategies []Strategy          `yaml:"strategies"`
+	Indexes    map[string][]string `yaml:"indexes"`
+}
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -62,5 +70,28 @@ func initConfig() {
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {
 		fmt.Println("Using config file:", viper.ConfigFileUsed())
+	}
+}
+
+func (c *Conf) GetConf() *Conf {
+	yamlFile, err := ioutil.ReadFile(viper.ConfigFileUsed())
+	if err != nil {
+		log.Printf("yamlFile.Get err   #%v ", err)
+	}
+	err = yaml.Unmarshal(yamlFile, c)
+	if err != nil {
+		log.Fatalf("Unmarshal: %v", err)
+	}
+	return c
+}
+
+func (c *Conf) WriteConf() {
+	data, err := yaml.Marshal(c)
+	if err != nil {
+		log.Fatalf("Marshal: %v", err)
+	}
+	err = ioutil.WriteFile(viper.ConfigFileUsed(), data, 0644)
+	if err != nil {
+		log.Fatalf("WriteFile: %v", err)
 	}
 }

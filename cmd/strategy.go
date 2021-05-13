@@ -7,12 +7,12 @@ import (
 )
 
 type Strategy struct {
-	Name             string   `json:"name"`
-	Index            []string `json:"index"`
-	BuyThresholdPct  float64  `json:"buy_threshold_pct"`
-	SellThresholdPct float64  `json:"sell_threshold_pct"`
-	BuyIncrement     float64  `json:"buy_increment,omitempty"`
-	BuyIncrementPct  float64  `json:"buy_increment_pct,omitempty"`
+	Name             string  `yaml:"name"`
+	IndexName        string  `yaml:"index_name"`
+	BuyThresholdPct  float64 `yaml:"buy_threshold_pct"`
+	SellThresholdPct float64 `yaml:"sell_threshold_pct"`
+	BuyIncrement     float64 `yaml:"buy_increment,omitempty"`
+	BuyIncrementPct  float64 `yaml:"buy_increment_pct,omitempty"`
 }
 
 var strategyCmd = &cobra.Command{
